@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista de tarea</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Lista de Tareas</h1>
+
+      <div class="input-area">
+        <input
+          type="text"
+          id="task-input"
+          placeholder="Escribí una nueva tarea"
+        />
+        <button onclick="addTask()">Agregar tarea</button>
+        <button onclick="clearCompleted()">Borrar finalizadas</button>
+      </div>
+
+      <p id="counter"></p>
+      <div id="task-list"></div>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+  </body>
+</html>
