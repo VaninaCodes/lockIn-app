@@ -1,13 +1,71 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LOCK IN</title>
   </head>
   <body>
-    <section id="seccionProgreso">
+    <!-- LISTA DE TAREAS -->
+    <section id="tareas">
+      <h2>Lista de Tareas</h2>
+
+      <input
+        type="text"
+        id="task-input"
+        placeholder="Escribí una nueva tarea"
+      />
+
+      <button onclick="addTask()">Agregar tarea</button>
+      <button onclick="clearCompleted()">Borrar finalizadas</button>
+
+      <p id="counter"></p>
+
+      <div id="task-list"></div>
+    </section>
+
+    <hr />
+
+    <!-- POMODORO -->
+    <section id="pomodoro">
+      <h2>Pomodoro</h2>
+
+      <p>Técnica de estudio basada en sesiones de trabajo y descanso.</p>
+
+      <h3 id="tiempo">00:25:00</h3>
+
+      <button id="iniciar">Iniciar</button>
+      <button id="pausar">Pausar</button>
+      <button id="reiniciar">Reiniciar</button>
+
+      <label>Modo de estudio:</label>
+
+      <select id="tipoPomodoro">
+        <option value="1-5">25 min estudio / 5 min descanso</option>
+        <option value="50-10">50 min estudio / 10 min descanso</option>
+        <option value="90-20">90 min estudio / 20 min descanso</option>
+      </select>
+
+      <br /><br />
+
+      <label>Cantidad de sets:</label>
+
+      <select id="cantidadSets">
+        <option value="1">1 set</option>
+        <option value="2">2 sets</option>
+        <option value="3">3 sets</option>
+        <option value="4">4 sets</option>
+      </select>
+
+      <h4 id="estadoPomodoro">Estudio</h4>
+    </section>
+
+    <hr />
+
+    <!-- PROGRESO -->
+    <section id="progreso">
       <h2>Progreso</h2>
+
       <div>
         <h3>Tiempo acumulado</h3>
         <p id="cronometro">00:00</p>
@@ -15,22 +73,30 @@
 
       <div>
         <h3>Objetivo de estudio</h3>
+
         <p>
-          <span id="minutosActuales">0</span>/
-          <span id="objetivoMinutos">60</span>minutos
+          <span id="minutosActuales">0</span>
+          /
+          <span id="objetivoMinutos">60</span>
+          minutos
         </p>
       </div>
 
       <div>
         <h3>Barra de progreso</h3>
+
         <progress id="barraProgreso" value="0" max="100"></progress>
+
         <p id="porcentaje">0%</p>
       </div>
 
       <div>
-        <h3>Tareas Finalizadas</h3>
+        <h3>Tareas finalizadas</h3>
+
         <p id="contadorTareas">0</p>
       </div>
     </section>
+
+    <script src="assets/js/app.js"></script>
   </body>
 </html>
