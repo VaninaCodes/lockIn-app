@@ -112,6 +112,18 @@ function clearCompleted() {
     save();
 }
 
+// Escapa caracteres especiales antes de meter el texto en innerHTML.
+// Antes, una tarea con comillas (") rompía el <input> de edicion.
+function escapeHtml(str) {
+
+    return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
 function render() {
 
     const list =
@@ -157,10 +169,11 @@ function render() {
                 ?
                 `<input
                     id="edit-${t.id}"
-                    value="${t.text}"
+                    value="${escapeHtml(t.text)}"
+                    onkeydown="if(event.key==='Enter') saveEdit(${t.id})"
                 >`
                 :
-                `<span>${t.text}</span>`
+                `<span>${escapeHtml(t.text)}</span>`
             }
 
             ${
@@ -220,6 +233,14 @@ let intervaloPomodoro = null;
 const tiempo =
     document.getElementById("tiempo");
 
+function pintarTiempo() {
+
+    tiempo.textContent =
+        `${String(pomodoroHoras).padStart(2,"0")}:` +
+        `${String(pomodoroMinutos).padStart(2,"0")}:` +
+        `${String(pomodoroSegundos).padStart(2,"0")}`;
+}
+
 function actualizarPomodoro() {
 
     pomodoroSegundos--;
@@ -227,19 +248,19 @@ function actualizarPomodoro() {
     // Tiempo acumulado de estudio
     segundosAcumulados++;
 
-let minutosAcumulados =
-    Math.floor(segundosAcumulados / 60);
+    let minutosAcumulados =
+        Math.floor(segundosAcumulados / 60);
 
-let segundosMostrar =
-    segundosAcumulados % 60;
+    let segundosMostrar =
+        segundosAcumulados % 60;
 
-cronometro.textContent =
-    String(minutosAcumulados).padStart(2, "0")
-    + ":"
-    + String(segundosMostrar).padStart(2, "0");
+    cronometro.textContent =
+        String(minutosAcumulados).padStart(2, "0")
+        + ":"
+        + String(segundosMostrar).padStart(2, "0");
 
-minutosActuales.textContent =
-    minutosAcumulados;
+    minutosActuales.textContent =
+        minutosAcumulados;
     actualizarProgreso();
 
     if (pomodoroSegundos < 0) {
@@ -250,68 +271,69 @@ minutosActuales.textContent =
     }
 
     if (
-    pomodoroMinutos === 0 &&
-    pomodoroSegundos === 0
-) {
+        pomodoroMinutos === 0 &&
+        pomodoroSegundos === 0
+    ) {
 
-    if (!esDescanso) {
+        if (!esDescanso) {
 
-        esDescanso = true;
+            esDescanso = true;
 
-        document.getElementById(
-            "estadoPomodoro"
-        ).textContent =
-            "Descanso";
+            document.getElementById(
+                "estadoPomodoro"
+            ).textContent =
+                "Descanso";
 
-        pomodoroMinutos =
-            minutosDescanso;
+            pomodoroMinutos =
+                minutosDescanso;
 
-        pomodoroSegundos = 0;
+            pomodoroSegundos = 0;
 
-        return;
-    }
-
-    else {
-
-        setActual++;
-
-        if (
-            setActual > totalSets
-        ) {
-
-            clearInterval(
-                intervaloPomodoro
-            );
-
-            intervaloPomodoro = null;
-
-            alert(
-                "Terminaste todas las sesiones de estudio."
-            );
-
+            pintarTiempo();
             return;
         }
 
-        esDescanso = false;
+        else {
 
-        document.getElementById(
-            "estadoPomodoro"
-        ).textContent =
-            "Estudio";
+            setActual++;
 
-        pomodoroMinutos =
-            minutosEstudio;
+            if (
+                setActual > totalSets
+            ) {
 
-        pomodoroSegundos = 0;
+                clearInterval(
+                    intervaloPomodoro
+                );
 
-        return;
+                intervaloPomodoro = null;
+
+                pintarTiempo();
+
+                alert(
+                    "Terminaste todas las sesiones de estudio."
+                );
+
+                return;
+            }
+
+            esDescanso = false;
+
+            document.getElementById(
+                "estadoPomodoro"
+            ).textContent =
+                "Estudio";
+
+            pomodoroMinutos =
+                minutosEstudio;
+
+            pomodoroSegundos = 0;
+
+            pintarTiempo();
+            return;
+        }
     }
-}
 
-    tiempo.textContent =
-        `${String(pomodoroHoras).padStart(2,"0")}:` +
-        `${String(pomodoroMinutos).padStart(2,"0")}:` +
-        `${String(pomodoroSegundos).padStart(2,"0")}`;
+    pintarTiempo();
 }
 
 document
@@ -341,13 +363,20 @@ document
             ).value
         );
 
+    // Si todavia no arranco ninguna cuenta (esta en el tiempo "de fabrica"),
+    // usamos el tiempo de estudio elegido en el select.
     if (
-        pomodoroMinutos === 25 &&
-        pomodoroSegundos === 0
+        !esDescanso &&
+        setActual === 1 &&
+        segundosAcumulados === 0
     ) {
 
         pomodoroMinutos =
             minutosEstudio;
+
+        pomodoroSegundos = 0;
+
+        pintarTiempo();
     }
 
     objetivo =
@@ -382,23 +411,42 @@ document
 
     esDescanso = false;
     setActual = 1;
+    segundosAcumulados = 0;
 
-document.getElementById(
-    "estadoPomodoro"
-    ).textContent =
-    "Estudio";
+    document.getElementById(
+        "estadoPomodoro"
+        ).textContent =
+        "Estudio";
     clearInterval(
         intervaloPomodoro
     );
 
     intervaloPomodoro = null;
 
+    // Reinicia respetando el modo elegido en el select,
+    // en vez de volver siempre a 25 min como antes.
+    const opcion =
+        document.getElementById(
+            "tipoPomodoro"
+        ).value;
+
+    const partes =
+        opcion.split("-");
+
+    minutosEstudio =
+        parseInt(partes[0]);
+
+    minutosDescanso =
+        parseInt(partes[1]);
+
     pomodoroSegundos = 0;
-    pomodoroMinutos = 25;
+    pomodoroMinutos = minutosEstudio;
     pomodoroHoras = 0;
 
-    tiempo.textContent =
-        "00:25:00";
+    cronometro.textContent = "00:00";
+    minutosActuales.textContent = "0";
+
+    pintarTiempo();
 
 });
 
@@ -437,11 +485,11 @@ function actualizarProgreso() {
 
     let progresoTotal = 0;
 
-if (tasks.length > 0) {
+    if (tasks.length > 0) {
 
-    progresoTotal =
-        (completadas / tasks.length) * 100;
-}
+        progresoTotal =
+            (completadas / tasks.length) * 100;
+    }
 
     if (progresoTotal > 100) {
         progresoTotal = 100;
@@ -453,16 +501,40 @@ if (tasks.length > 0) {
     porcentaje.textContent =
         Math.floor(progresoTotal)
         + "%";
-    if (progresoTotal >= 100) {
 
-    clearInterval(intervaloPomodoro);
+    if (progresoTotal >= 100 && tasks.length > 0) {
 
-    intervaloPomodoro = null;
+        clearInterval(intervaloPomodoro);
 
-    alert(
-    "Completaste todas las tareas."
-);
+        intervaloPomodoro = null;
+
+        alert(
+            "Completaste todas las tareas."
+        );
+    }
 }
+
+// ========================================
+// MENU MOBILE
+// ========================================
+
+const sidebar =
+    document.getElementById("sidebar");
+
+const sidebarToggle =
+    document.getElementById("sidebarToggle");
+
+if (sidebarToggle) {
+
+    sidebarToggle.addEventListener("click", () => {
+        sidebar.classList.toggle("open");
+    });
+
+    document.querySelectorAll(".nav-item").forEach(link => {
+        link.addEventListener("click", () => {
+            sidebar.classList.remove("open");
+        });
+    });
 }
 
 // ========================================
@@ -471,3 +543,24 @@ if (tasks.length > 0) {
 
 render();
 actualizarProgreso();
+
+// ========================================
+// SALUDO Y FECHA
+// ========================================
+
+function actualizarSaludo() {
+    const hora = new Date().getHours();
+    const saludoEl = document.getElementById("saludo");
+
+    let mensaje = "Buenas noches ";
+    if (hora >= 6 && hora < 12) mensaje = "Buen día ";
+    else if (hora >= 12 && hora < 19) mensaje = "Buenas tardes ";
+
+    saludoEl.textContent = mensaje;
+
+    const fechaEl = document.getElementById("fecha-actual");
+    const opciones = { weekday: "long", day: "numeric", month: "long" };
+    fechaEl.textContent = new Date().toLocaleDateString("es-AR", opciones);
+}
+
+actualizarSaludo();
