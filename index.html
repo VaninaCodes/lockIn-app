@@ -14,7 +14,23 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="assets/css/style.css" />
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/assets/img/logo.ico"
+    />
   </head>
   <body>
     <!-- Barra lateral -->
@@ -29,9 +45,9 @@
         </div>
 
         <nav class="sidebar-nav">
-          <a href="#" class="nav-item"> Inicio </a>
-          <a href="index.html" class="nav-item active"> Estudio </a>
           <a href="#" class="nav-item"> Perfil </a>
+          <a href="index.html" class="nav-item active"> Estudio </a>
+          <a href="#" class="nav-item"> Salir </a>
         </nav>
       </aside>
 
@@ -125,6 +141,19 @@
       integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
       crossorigin="anonymous"
     ></script>
+    <!-- Mensaje al terminar las tareas -->
+    <!-- Modal -->
+    <div id="mensajeFinal" class="modal-final">
+      <div class="modal-contenido">
+        <h2>¡Felicitaciones!</h2>
+        <p>Completaste todas tus tareas. ¡Excelente trabajo!</p>
+        <p>¿Querés seguir estudiando?</p>
+        <button id="seguirEstudiando">Sí</button>
+        <button id="terminarEstudio">No</button>
+      </div>
+    </div>
+    <!-- Libreria para el confeti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <script src="assets/js/app.js"></script>
   </body>
 </html>

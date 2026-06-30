@@ -14,9 +14,10 @@
 }
 
 body{
-   font-weight: 400;
-   background-color:var(--pale-slate);
-   margin: 0;
+  font-weight: 500px;
+  background-color:var(--pale-slate);
+  margin: 0;
+  font-family: 'Bagel Fat One', cursive;
 }
 
 .app-layout{
@@ -31,6 +32,7 @@ body{
     color: var(--soft-blush);
     padding: 24px 16px;
     flex-shrink: 0;
+    /* font-size: 500px; */
 }
 
 .sidebar-logo{
@@ -41,7 +43,7 @@ body{
 }
 
 .sidebar-logo h1{
-   font-size: 1.2rem;
+   font-size: 30px;
    margin: 0; 
 }
 
@@ -97,6 +99,7 @@ body{
 }
 #saludo{
     text-align: left;
+    font-size: 44px;
 }
 #fecha-actual{
     text-align: left;
@@ -126,7 +129,7 @@ body{
 }
 
 #tiempo{
-    font-size: 50px !important;
+    font-size: 70px !important;
     color: var(--taupe-grey);
 }
 
@@ -263,15 +266,20 @@ input[type="text"], select{
   margin-bottom: 8px;
   color: var(--taupe-grey);
   gap: 8px;
+  border-radius: 10px;
 }
 
 progress{
   width: 100%;
   height: 12px;
-  border-radius: 10px;
+  border-radius: 15px;
   accent-color: var(--old-rose);
+  overflow: hidden;
 }
-
+progress::-webkit-progress-value {
+  background-color: var(--old-rose); /* cambiá por el color que quieras */
+  border-radius: 15px;
+}
 #porcentaje{
   text-align: right;
   color: var(--cool-steel);
@@ -363,5 +371,40 @@ progress{
   #task-list button{
     font-size: .8rem;
     padding: 5px 8px;
+  }
+}
+
+/* ===== Modal de Felicitaciones ===== */
+.modal-final{
+  position: fixed;
+  inset: 0;
+  /* background-color: var(--soft-blush); */
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-final.mostrar{
+  display: flex;
+}
+
+.modal-contenido{
+  background: var(--taupe-grey);
+  color: white;
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  width: 350px;
+  animation: aparecer .3s;
+}
+@keyframes aparecer{
+  from{
+    transform: scale(.8);
+    opacity: 0;
+  }
+  to{
+    transform: scale(1);
+    opacity: 1;
   }
 }

@@ -508,9 +508,8 @@ function actualizarProgreso() {
 
         intervaloPomodoro = null;
 
-        alert(
-            "Completaste todas las tareas."
-        );
+        mostrarFelicitacion();
+        
     }
 }
 
@@ -543,7 +542,16 @@ if (sidebarToggle) {
 
 render();
 actualizarProgreso();
-
+function mostrarFelicitacion(){
+    document.getElementById("mensajeFinal").classList.add("mostrar");
+    confetti({
+        particleCount: 200,
+        spread: 120,
+        origin: {
+            y: 0.6
+        }
+    });
+}
 // ========================================
 // SALUDO Y FECHA
 // ========================================
@@ -562,5 +570,26 @@ function actualizarSaludo() {
     const opciones = { weekday: "long", day: "numeric", month: "long" };
     fechaEl.textContent = new Date().toLocaleDateString("es-AR", opciones);
 }
-
 actualizarSaludo();
+
+// Botones del modal final
+document
+.getElementById("seguirEstudiando")
+.addEventListener("click", ()=>{
+
+    document
+    .getElementById("mensajeFinal")
+    .classList.remove("mostrar");
+
+});
+document
+.getElementById("terminarEstudio")
+.addEventListener("click", ()=>{
+
+    document
+    .getElementById("mensajeFinal")
+    .classList.remove("mostrar");
+
+    alert("¡Hasta la próxima! ");
+
+});
