@@ -1,0 +1,10 @@
+#foto img{
+    height: 200px;
+    border-radius: 100%;
+}
+
+#perfil-layout{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
