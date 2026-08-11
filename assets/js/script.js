@@ -6,6 +6,8 @@ let tasks = JSON.parse(
     localStorage.getItem("tareas") || "[]"
 );
 
+let ultimoId = null;
+
 function save() {
 
     localStorage.setItem(
@@ -27,12 +29,16 @@ function addTask() {
 
     if (!text) return;
 
-    tasks.push({
+    const nuevaTarea = {
         id: Date.now(),
         text: text,
         done: false,
         editing: false
-    });
+    };
+
+    tasks.push(nuevaTarea);
+
+    ultimoId = nuevaTarea.id;
 
     input.value = "";
 
@@ -156,7 +162,7 @@ function render() {
 
     list.innerHTML =
         tasks.map(t => `
-        <div>
+        <div class="${t.id === ultimoId ? 'tarea-nueva' : ''}">
 
             <input
                 type="checkbox"
@@ -194,6 +200,13 @@ function render() {
 
         </div>
     `).join("");
+
+    if (ultimoId !== null) {
+
+        setTimeout(() => {
+            ultimoId = null;
+        }, 400);
+    }
 }
 
 document
