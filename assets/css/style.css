@@ -408,3 +408,33 @@ progress::-webkit-progress-value {
     opacity: 1;
   }
 }
+
+/* ===== REGISTRO ===== */
+#saludo-registro{
+    font-size: 44px;
+    color: var(--taupe-grey);
+    text-align: center;
+    padding: 20px;
+}
+#mensaje-registro{
+    font-size: 20px;
+    color: var(--taupe-grey);
+    text-align: center;
+}
+.login-layout{
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.login-content{
+  background-color: white;
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow:0px 4px 20px rgba(96,77,83,0.12);
+}
+#registro{
+  display: flex;
+  flex-direction: column;
+}
