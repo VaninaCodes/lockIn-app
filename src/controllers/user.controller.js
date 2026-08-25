@@ -34,13 +34,40 @@ export const createUser = async (req, res) => {
         if (!name || !email || !password){
             return res.status(400).json({message: "Debe completar todos los campos"})
         }
+
         const newUser = await userModel.create({
             name,
             email,
             password,
         });
 
-        res.status(201).json({message: "User creado!", newUser});
+        const { password: _, ...userSinPassword } = newUser.toJSON();
+        res.status(201).json({message: "User creado!", user: userSinPassword});
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({message: "Error interno del servidor"});
+    }
+};
+
+export const loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({message: "Debe completar todos los campos"});
+        }
+
+        const user = await userModel.findOne({ where: { email } });
+        if (!user) {
+            return res.status(404).json({message: "Usuario no encontrado"});
+        }
+
+        if (user.password !== password) {
+            return res.status(401).json({message: "Contraseña incorrecta"});
+        }
+
+        const { password: _, ...userSinPassword } = user.toJSON();
+        res.status(200).json({message: "Login exitoso", user: userSinPassword});
     }
     catch(error){
         console.log(error);
