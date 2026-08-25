@@ -57,15 +57,40 @@
         <header>
           <h2>Hola usuario</h2>
         </header>
+
         <div class="cards-grid">
-          <!-- Perfil -->
+          <!-- Perfil: TODO dentro de la misma tarjeta -->
           <section id="perfil" class="card">
-            <div id="perfil-layout">
-              <div id="foto">
-                <img
-                  src="https://i.pinimg.com/1200x/b7/d2/98/b7d29834b980613edcb4429a245ceb38.jpg"
-                  alt="fotoPerfilUsuario"
-                />
+            <div id="foto">
+              <img
+                id="fotoPerfil"
+                src="https://i.pinimg.com/1200x/b7/d2/98/b7d29834b980613edcb4429a245ceb38.jpg"
+                alt="fotoPerfilUsuario"
+              />
+              <label for="inputFoto">Cambiar foto</label>
+              <input type="file" id="inputFoto" accept="image/*" hidden />
+            </div>
+
+            <div class="desc">
+              <!-- ===== MODO VER ===== -->
+              <div id="verPerfil">
+                <h3 id="verNombre">Nombre Completo</h3>
+                <p id="verBio">Acá va tu biografía</p>
+                <button id="botonEditar">Editar perfil</button>
+              </div>
+
+              <!-- ===== MODO EDITAR (arranca oculto) ===== -->
+              <div id="editarPerfil" hidden>
+                <label for="inputNombre">Nombre</label>
+                <input type="text" id="inputNombre" />
+
+                <label for="inputBio">Bio</label>
+                <textarea id="inputBio"></textarea>
+
+                <div id="botonesEdicion">
+                  <button id="botonGuardar">Guardar</button>
+                  <button id="botonCancelar" type="button">Cancelar</button>
+                </div>
               </div>
             </div>
           </section>
@@ -80,6 +105,6 @@
 
     <!-- Libreria para el confeti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <script src="assets/js/script.js"></script>
+    <script src="assets/js/perfil.js"></script>
   </body>
 </html>
