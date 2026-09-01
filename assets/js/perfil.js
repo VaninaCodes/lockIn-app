@@ -9,12 +9,16 @@ const fotoPerfil = document.getElementById("fotoPerfil");
 // modo ver
 const verPerfil = document.getElementById("verPerfil");
 const verNombre = document.getElementById("verNombre");
+const verUsuario = document.getElementById("verUsuario");
+const verPronombres = document.getElementById("verPronombres");
 const verBio = document.getElementById("verBio");
 const botonEditar = document.getElementById("botonEditar");
 
 // modo editar
 const editarPerfil = document.getElementById("editarPerfil");
+const inputUser = document.getElementById("inputUser");
 const inputNombre = document.getElementById("inputNombre");
+const inputPronombres = document.getElementById("inputPronombres");
 const inputBio = document.getElementById("inputBio");
 const botonGuardar = document.getElementById("botonGuardar");
 const botonCancelar = document.getElementById("botonCancelar");
@@ -45,7 +49,9 @@ inputFoto.addEventListener("change", function () {
 botonEditar.addEventListener("click", function () {
 
     // cargamos en los inputs lo que se está mostrando ahora
+    inputUser.value = verUsuario.textContent;
     inputNombre.value = verNombre.textContent;
+    inputPronombres.value = verPronombres.textContent;
     inputBio.value = verBio.textContent;
 
     // escondemos "ver" y mostramos "editar"
@@ -71,7 +77,9 @@ botonCancelar.addEventListener("click", function () {
 
 botonGuardar.addEventListener("click", function () {
 
+    verUsuario.textContent = inputUser.value;
     verNombre.textContent = inputNombre.value;
+    verPronombres.textContent = inputPronombres.value;
     verBio.textContent = inputBio.value;
 
     guardarEnStorage();
@@ -87,7 +95,9 @@ botonGuardar.addEventListener("click", function () {
 function guardarEnStorage() {
 
     const datosPerfil = {
+        usuario: verUsuario.textContent,
         nombre: verNombre.textContent,
+        pronombres: verPronombres.textContent,
         bio: verBio.textContent,
         foto: fotoPerfil.src
     };
@@ -102,7 +112,9 @@ if (guardado) {
 
     const datosPerfil = JSON.parse(guardado);
 
+    verUsuario.textContent = datosPerfil.usuario || verUsuario.textContent;
     verNombre.textContent = datosPerfil.nombre;
+    verPronombres.textContent = datosPerfil.pronombres || verPronombres.textContent;
     verBio.textContent = datosPerfil.bio;
     fotoPerfil.src = datosPerfil.foto;
 }

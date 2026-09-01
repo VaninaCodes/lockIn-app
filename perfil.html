@@ -62,27 +62,48 @@
           <!-- Perfil: TODO dentro de la misma tarjeta -->
           <section id="perfil" class="card">
             <div id="foto">
-              <img
-                id="fotoPerfil"
-                src="https://i.pinimg.com/1200x/b7/d2/98/b7d29834b980613edcb4429a245ceb38.jpg"
-                alt="fotoPerfilUsuario"
-              />
-              <label for="inputFoto">Cambiar foto</label>
-              <input type="file" id="inputFoto" accept="image/*" hidden />
+              <div id="fotoWrapper">
+                <img
+                  id="fotoPerfil"
+                  src="https://i.pinimg.com/1200x/b7/d2/98/b7d29834b980613edcb4429a245ceb38.jpg"
+                  alt="fotoPerfilUsuario"
+                />
+                <label for="inputFoto" id="botonCambiarFoto">
+                  <i class="bi bi-pencil-fill"></i>
+                  <span class="tooltip-foto">Cambiar foto</span>
+                </label>
+                <input type="file" id="inputFoto" accept="image/*" hidden />
+              </div>
             </div>
 
             <div class="desc">
               <!-- ===== MODO VER ===== -->
               <div id="verPerfil">
                 <h3 id="verNombre">Nombre Completo</h3>
+                <p id="verUsername">
+                  <span id="verUsuario">usuario</span> ·
+                  <span id="verPronombres">pronombres</span>
+                </p>
                 <p id="verBio">Acá va tu biografía</p>
                 <button id="botonEditar">Editar perfil</button>
               </div>
 
               <!-- ===== MODO EDITAR (arranca oculto) ===== -->
               <div id="editarPerfil" hidden>
+                <label for="inputUser"
+                  >usuario
+                  <input type="text" id="inputUser" />
+                </label>
+
                 <label for="inputNombre">Nombre</label>
                 <input type="text" id="inputNombre" />
+
+                <label for="inputPronombres">Pronombres</label>
+                <input
+                  type="text"
+                  id="inputPronombres"
+                  placeholder="ej: él/ella"
+                />
 
                 <label for="inputBio">Bio</label>
                 <textarea id="inputBio"></textarea>

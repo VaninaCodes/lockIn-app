@@ -18,17 +18,63 @@
   flex-shrink: 0; /* que no se achique cuando el texto de al lado sea largo */
 }
 
+#fotoWrapper{
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+
 #foto img{
   width: 200px;
   height: 200px;
   border-radius: 50%;
   object-fit: cover;
-  margin-bottom: 8px;
+  display: block;
 }
 
-#foto label{
-  font-weight: bold;
+/* Icono circular superpuesto sobre la foto, estilo GitHub */
+#botonCambiarFoto{
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--old-rose);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
   cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+#botonCambiarFoto:hover{
+  filter: brightness(1.1);
+}
+
+/* Tooltip que aparece al pasar el mouse, como "Change your avatar" de GitHub */
+.tooltip-foto{
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--taupe-grey);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: normal;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+#botonCambiarFoto:hover .tooltip-foto{
+  opacity: 1;
 }
 
 .desc{
@@ -43,16 +89,23 @@
   margin-bottom: 4px;
 }
 
+#verUsername{
+  color: var(--cool-steel);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
 #verBio{
   color: var(--cool-steel);
   margin-bottom: 12px;
 }
 
 #botonEditar{
+  width: 100%;
   background: transparent;
   color: var(--old-rose);
   border: 2px solid var(--old-rose);
-  border-radius: 20px;
+  border-radius: 8px;
   padding: 8px 24px;
 }
 
