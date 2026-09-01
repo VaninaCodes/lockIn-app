@@ -24,6 +24,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/login-registro.css" />
     <!-- Favicon -->
     <link
       rel="icon"
@@ -49,6 +50,20 @@
           <button>Ingresar</button>
         </form>
         <p>No tenes una cuenta? <a href="registro.html">Registrate acá</a></p>
+      </div>
+    </div>
+    <div id="modalOverlay" class="modal-overlay">
+      <div class="modal-box">
+        <h3 id="modalTitle" class="modal-title">Aviso</h3>
+        <p id="modalMessage" class="modal-message"></p>
+        <div class="modal-actions">
+          <button id="modalCloseBtn" class="modal-btn modal-btn-secondary">
+            Cerrar
+          </button>
+          <button id="modalAcceptBtn" class="modal-btn modal-btn-primary">
+            Aceptar
+          </button>
+        </div>
       </div>
     </div>
     <script

@@ -1,5 +1,39 @@
-
 const API_URL = 'http://localhost:3001/api/users';
+
+// ----- MODAL -----
+function showModal(message, { title = 'Aviso', onAccept = null } = {}) {
+  const overlay = document.getElementById('modalOverlay');
+  const titleEl = document.getElementById('modalTitle');
+  const messageEl = document.getElementById('modalMessage');
+  const acceptBtn = document.getElementById('modalAcceptBtn');
+  const closeBtn = document.getElementById('modalCloseBtn');
+
+  titleEl.textContent = title;
+  messageEl.textContent = message;
+  overlay.classList.add('active');
+
+  const cleanup = () => {
+    overlay.classList.remove('active');
+    acceptBtn.removeEventListener('click', handleAccept);
+    closeBtn.removeEventListener('click', handleClose);
+    overlay.removeEventListener('click', handleOverlayClick);
+  };
+
+  const handleAccept = () => {
+    cleanup();
+    if (onAccept) onAccept();
+  };
+
+  const handleClose = () => cleanup();
+
+  const handleOverlayClick = (e) => {
+    if (e.target === overlay) cleanup();
+  };
+
+  acceptBtn.addEventListener('click', handleAccept);
+  closeBtn.addEventListener('click', handleClose);
+  overlay.addEventListener('click', handleOverlayClick);
+}
 
 // ----- REGISTRO -----
 const tieneUsername = document.getElementById('username');
@@ -26,15 +60,17 @@ if (formRegistro) {
         const msg = Array.isArray(data)
           ? data.map(d => d).join('\n')
           : data.message;
-        alert(msg || 'Error al registrarse');
+        showModal(msg || 'Error al registrarse', { title: 'Error' });
         return;
       }
 
-      alert('Cuenta creada con éxito');
-      window.location.href = 'login.html';
+      showModal('Cuenta creada con éxito', {
+        title: 'Éxito',
+        onAccept: () => { window.location.href = 'login.html'; }
+      });
     } catch (err) {
       console.error(err);
-      alert('No se pudo conectar con el servidor');
+      showModal('No se pudo conectar con el servidor', { title: 'Error' });
     }
   });
 }
@@ -59,7 +95,7 @@ if (formLogin) {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.message || 'Credenciales incorrectas');
+        showModal(data.message || 'Credenciales incorrectas', { title: 'Error' });
         return;
       }
 
@@ -67,7 +103,7 @@ if (formLogin) {
       window.location.href = 'index.html';
     } catch (err) {
       console.error(err);
-      alert('No se pudo conectar con el servidor');
+      showModal('No se pudo conectar con el servidor', { title: 'Error' });
     }
   });
 }
