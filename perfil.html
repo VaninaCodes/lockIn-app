@@ -24,6 +24,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/perfil.style.css" />
     <!-- Favicon -->
     <link
       rel="icon"
@@ -54,83 +55,64 @@
       <!-- Contenido principal -->
       <main class="content">
         <header>
-          <h2 id="saludo">Buen dia</h2>
-          <p id="fecha-actual"></p>
+          <h2>Hola usuario</h2>
         </header>
+
         <div class="cards-grid">
-          <!-- POMODORO -->
-          <section id="pomodoro" class="card card-time">
-            <h2 id="tiempo">00:25:00</h2>
-            <div class="btn-group-pomodoro">
-              <button id="iniciar">Iniciar</button>
-              <button id="pausar">Pausar</button>
-              <button id="reiniciar">Reiniciar</button>
-            </div>
-            <div id="cards-sets">
-              <label>Modo de estudio:</label>
-              <select id="tipoPomodoro">
-                <option value="25-5">25 min estudio / 5 min descanso</option>
-                <option value="50-10">50 min estudio / 10 min descanso</option>
-                <option value="90-20">90 min estudio / 20 min descanso</option>
-              </select>
-
-              <label>Cantidad de sets:</label>
-              <select id="cantidadSets">
-                <option value="1">1 set</option>
-                <option value="2">2 sets</option>
-                <option value="3">3 sets</option>
-                <option value="4">4 sets</option>
-              </select>
-            </div>
-            <h4 id="estadoPomodoro">Estudio</h4>
-          </section>
-
-          <!-- LISTA DE TAREAS -->
-          <section id="tareas" class="card card-tasks">
-            <h3>Lista de Tareas</h3>
-            <div class="task-input-row">
-              <input
-                type="text"
-                id="task-input"
-                placeholder="Escribí una nueva tarea"
-              />
-              <button onclick="addTask()">Agregar tarea</button>
+          <!-- Perfil: TODO dentro de la misma tarjeta -->
+          <section id="perfil" class="card">
+            <div id="foto">
+              <div id="fotoWrapper">
+                <img
+                  id="fotoPerfil"
+                  src="https://i.pinimg.com/1200x/b7/d2/98/b7d29834b980613edcb4429a245ceb38.jpg"
+                  alt="fotoPerfilUsuario"
+                />
+                <label for="inputFoto" id="botonCambiarFoto">
+                  <i class="bi bi-pencil-fill"></i>
+                  <span class="tooltip-foto">Cambiar foto</span>
+                </label>
+                <input type="file" id="inputFoto" accept="image/*" hidden />
+              </div>
             </div>
 
-            <button class="btn-clear" onclick="clearCompleted()">
-              Borrar finalizadas
-            </button>
+            <div class="desc">
+              <!-- ===== MODO VER ===== -->
+              <div id="verPerfil">
+                <h3 id="verNombre">Nombre Completo</h3>
+                <p id="verUsername">
+                  <span id="verUsuario">usuario</span> ·
+                  <span id="verPronombres">pronombres</span>
+                </p>
+                <p id="verBio">Acá va tu biografía</p>
+                <button id="botonEditar">Editar perfil</button>
+              </div>
 
-            <p id="counter"></p>
+              <!-- ===== MODO EDITAR (arranca oculto) ===== -->
+              <div id="editarPerfil" hidden>
+                <label for="inputUser"
+                  >usuario
+                  <input type="text" id="inputUser" />
+                </label>
 
-            <div id="task-list"></div>
-          </section>
+                <label for="inputNombre">Nombre</label>
+                <input type="text" id="inputNombre" />
 
-          <!-- PROGRESO -->
-          <section id="progreso" class="card card-progress">
-            <h3>Progreso</h3>
+                <label for="inputPronombres">Pronombres</label>
+                <input
+                  type="text"
+                  id="inputPronombres"
+                  placeholder="ej: él/ella"
+                />
 
-            <div class="progress-item">
-              <span>Tiempo acumulado</span>
-              <strong id="cronometro">00:00</strong>
-            </div>
+                <label for="inputBio">Bio</label>
+                <textarea id="inputBio"></textarea>
 
-            <div class="progress-item">
-              <span>Objetivo de estudio</span>
-              <strong
-                ><span id="minutosActuales">0</span>/<span id="objetivoMinutos"
-                  >60</span
-                >
-                min</strong
-              >
-            </div>
-
-            <progress id="barraProgreso" value="0" max="100"></progress>
-            <p id="porcentaje">0%</p>
-
-            <div class="progress-item">
-              <span>Tareas finalizadas</span>
-              <strong id="contadorTareas">0</strong>
+                <div id="botonesEdicion">
+                  <button id="botonGuardar">Guardar</button>
+                  <button id="botonCancelar" type="button">Cancelar</button>
+                </div>
+              </div>
             </div>
           </section>
         </div>
@@ -144,6 +126,6 @@
 
     <!-- Libreria para el confeti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <script src="assets/js/script.js"></script>
+    <script src="assets/js/perfil.js"></script>
   </body>
 </html>
