@@ -48,6 +48,13 @@
           <!-- <a href="perfil.html" class="nav-item"> Perfil </a> -->
           <a href="perfil.html" class="nav-perfil">Perfil</a>
           <a href="index.html" class="nav-item active"> Estudio </a>
+          <button
+            type="button"
+            class="nav-personalizar"
+            id="abrirPersonalizacion"
+          >
+            <i class="bi bi-palette"></i> Personalizar
+          </button>
           <a href="registro.html" class="nav-item"> Salir </a>
         </nav>
       </aside>
@@ -155,6 +162,81 @@
     </div>
     <!-- Libreria para el confeti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+    <!-- Panel de personalización -->
+    <div id="personalizacionOverlay" class="personalizacion-overlay">
+      <div class="personalizacion-modal">
+        <button
+          type="button"
+          id="cerrarPersonalizacion"
+          class="cerrar-modal"
+          aria-label="Cerrar"
+        >
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <h3>Personalizar apariencia</h3>
+
+        <div class="personalizacion-bloque">
+          <label>Modo</label>
+          <div class="modo-toggle" id="modoToggle"></div>
+        </div>
+
+        <div class="personalizacion-bloque">
+          <label>Color de tema</label>
+          <div class="paletas-grid" id="paletasGrid"></div>
+        </div>
+
+        <div class="personalizacion-bloque">
+          <label>Fondo</label>
+          <div class="personalizacion-fondo-row">
+            <div id="fondoPreview" class="fondo-preview"></div>
+            <input type="color" id="inputColorFondo" title="Color de fondo" />
+            <input type="file" id="inputFondo" accept="image/*" />
+          </div>
+          <button
+            type="button"
+            id="quitarFondo"
+            class="btn-clear"
+            style="margin-top: 8px"
+          >
+            Quitar imagen/color
+          </button>
+        </div>
+
+        <div class="personalizacion-bloque">
+          <span
+            >Transparencia de los paneles:
+            <span id="opacidadValor">100%</span></span
+          >
+          <input
+            type="range"
+            id="opacidadSlider"
+            min="0.3"
+            max="1"
+            step="0.05"
+            value="1"
+          />
+        </div>
+
+        <div class="personalizacion-botones">
+          <button
+            type="button"
+            id="restablecerPersonalizacion"
+            class="btn-restablecer"
+          >
+            Restablecer
+          </button>
+          <button type="button" id="cancelarPersonalizacion" class="btn-clear">
+            Cancelar
+          </button>
+          <button type="button" id="guardarPersonalizacion">
+            Guardar cambios
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="assets/js/personalizacion.js"></script>
     <script src="assets/js/script.js"></script>
   </body>
 </html>

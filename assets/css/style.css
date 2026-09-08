@@ -5,8 +5,27 @@
   --cool-steel: #9DA3A4;
   --taupe-grey: #604D53;
 
+  /* Personalización: paleta de color, opacidad y modo claro/oscuro
+     se pisan en tiempo de ejecución vía JS (personalizacion.js) */
+  --accent-color: var(--old-rose);
+  --accent-dark: #720002;
+  --accent-tint: #F4D6DC;
+  --panel-opacity: 1;
+
+  /* Modo claro (default) */
+  --bg-base: var(--pale-slate);
+  --card-bg-rgb: 255, 255, 255;
+  --text-base: var(--taupe-grey);
+
   --sidebar-width: 230px;
   --radius: 16px;
+}
+
+/* Modo oscuro: se activa poniendo data-modo="oscuro" en <html> */
+[data-modo="oscuro"]{
+  --bg-base: #222526;
+  --card-bg-rgb: 42, 46, 49;
+  --text-base: #E0E0E0;
 }
 
 *{
@@ -15,9 +34,16 @@
 
 body{
   font-weight: 500px;
-  background-color:var(--pale-slate);
+  background-color: var(--bg-base);
+  background-image: none;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: var(--text-base);
   margin: 0;
   font-family: 'Bagel Fat One', cursive;
+  transition: background-color .2s ease, color .2s ease;
 }
 
 .app-layout{
@@ -28,10 +54,11 @@ body{
 /* side bar */
 .sidebar {
     width: var(--sidebar-width);
-    background-color: var(--taupe-grey);
+    background-color: var(--accent-dark);
     color: var(--soft-blush);
     padding: 24px 16px;
     flex-shrink: 0;
+    transition: background-color .2s ease;
     /* font-size: 500px; */
 }
 
@@ -84,7 +111,7 @@ body{
 }
 
 .nav-item.active{
-    background-color: var(--old-rose);
+    background-color: var(--accent-color);
     color: white;
 }
 
@@ -95,7 +122,7 @@ body{
     top: 14px;
     left: 14px;
     z-index: 20;
-    background-color: var(--taupe-grey);
+    background-color: var(--accent-dark);
     color: var(--soft-blush);
     border: none;
     border-radius: 10px;
@@ -127,17 +154,23 @@ body{
 }
 
 .card{
-    background-color: white;
+    background-color: rgba(var(--card-bg-rgb), var(--panel-opacity));
+    color: var(--text-base);
     border-radius: var(--radius);
     padding: 24px;
     box-shadow:0px 4px 20px rgba(96,77,83,0.12);
-    
+    backdrop-filter: blur(2px);
 }
 
 .card h3{
-    color: var(--old-rose);
+    color: var(--accent-color);
     margin-top: 0;
 }
+
+[data-modo="oscuro"] .card h3{
+    color: var(--accent-tint);
+}
+
 .card-time{
     grid-column: 1 / -1;
     text-align: center;
@@ -145,7 +178,7 @@ body{
 
 #tiempo{
     font-size: 70px !important;
-    color: var(--taupe-grey);
+    color: var(--text-base);
 }
 
 .card-time label{
@@ -174,14 +207,14 @@ body{
     align-items: center;
 }
 #estadoPomodoro{
-    color: var(--old-rose);
+    color: var(--accent-color);
     font-size: 35px;
     margin-bottom: 0;
     padding: 10px;
 }
 
 button{
-  background-color: var(--old-rose);
+  background-color: var(--accent-color);
   color: white;
   border: none;
   border-radius: 10px;
@@ -196,7 +229,7 @@ button:hover{ opacity: 0.85; }
 button:focus-visible,
 input:focus-visible,
 select:focus-visible{
-  outline: 2px solid var(--old-rose);
+  outline: 2px solid var(--accent-color);
   outline-offset: 2px;
 }
 
@@ -211,7 +244,7 @@ input[type="text"], select{
   font-family: inherit;
   font-size: 1rem;
   background-color: white;
-  color: var(--taupe-grey);
+  color: var(--text-base);
 }
 
 .task-input-row{
@@ -269,14 +302,14 @@ input[type="text"], select{
   width: 18px;
   height: 18px;
   flex-shrink: 0;
-  accent-color: var(--old-rose);
+  accent-color: var(--accent-color);
 }
 
 #task-list span{
   flex: 1;
   min-width: 0;
   word-break: break-word;
-  color: var(--taupe-grey);
+  color: var(--text-base);
 }
 
 #task-list input[type="text"]{
@@ -295,7 +328,7 @@ input[type="text"], select{
   justify-content: space-between;
   align-items: center;
   margin-bottom: 8px;
-  color: var(--taupe-grey);
+  color: var(--text-base);
   gap: 8px;
   border-radius: 10px;
 }
@@ -304,11 +337,11 @@ progress{
   width: 100%;
   height: 12px;
   border-radius: 15px;
-  accent-color: var(--old-rose);
+  accent-color: var(--accent-color);
   overflow: hidden;
 }
 progress::-webkit-progress-value {
-  background-color: var(--old-rose); /* cambiá por el color que quieras */
+  background-color: var(--accent-color); /* cambiá por el color que quieras */
   border-radius: 15px;
 }
 #porcentaje{
@@ -468,4 +501,233 @@ progress::-webkit-progress-value {
 #registro{
   display: flex;
   flex-direction: column;
+}
+
+/* ===== MODO OSCURO: ajustes de formularios ===== */
+
+[data-modo="oscuro"] input[type="text"],
+[data-modo="oscuro"] input[type="color"],
+[data-modo="oscuro"] select,
+[data-modo="oscuro"] textarea,
+[data-modo="oscuro"] #editarPerfil input,
+[data-modo="oscuro"] #editarPerfil textarea{
+  background-color: #2A2E31;
+  color: var(--text-base);
+  border-color: #4A4E51;
+}
+
+/* ===== PERSONALIZACIÓN (paleta, modo, fondo, transparencia) ===== */
+
+.nav-personalizar{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  color: var(--soft-blush);
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%;
+  margin: 4px 0 0 0;
+  transition: background-color .2s ease;
+}
+
+.nav-personalizar:hover{
+  background-color: rgba(255,255,255,0.1);
+  opacity: 1;
+}
+
+.personalizacion-overlay{
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0,0,0,0.35);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.personalizacion-overlay.mostrar{
+  display: flex;
+}
+
+.personalizacion-modal{
+  position: relative;
+  background: white;
+  color: var(--taupe-grey);
+  border-radius: var(--radius);
+  padding: 28px;
+  width: 440px;
+  max-width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: aparecer .2s ease;
+}
+
+.personalizacion-modal h3{
+  color: var(--old-rose);
+  margin-top: 0;
+  padding-right: 24px;
+}
+
+.cerrar-modal{
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: transparent;
+  color: var(--cool-steel);
+  border: none;
+  padding: 4px;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.cerrar-modal:hover{
+  color: var(--taupe-grey);
+  opacity: 1;
+}
+
+.personalizacion-bloque{
+  margin-bottom: 22px;
+}
+
+.personalizacion-bloque > label,
+.personalizacion-bloque > span{
+  display: block;
+  font-size: .9rem;
+  color: var(--cool-steel);
+  margin-bottom: 10px;
+}
+
+/* modo claro / oscuro: segmented control */
+.modo-toggle{
+  display: flex;
+  gap: 8px;
+}
+
+.modo-opcion{
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 2px solid var(--pale-slate);
+  background: white;
+  color: var(--taupe-grey);
+  cursor: pointer;
+  font-family: inherit;
+  margin: 0;
+}
+
+.modo-opcion.selected{
+  border-color: var(--old-rose);
+  background-color: var(--soft-blush);
+  color: var(--taupe-grey);
+}
+
+/* paletas: cada opción muestra sus colores reales, no un solo circulito */
+.paletas-grid{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.paleta-opcion{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 10px;
+  border: 2px solid var(--pale-slate);
+  background: white;
+  cursor: pointer;
+  font-family: inherit;
+  margin: 0;
+}
+
+.paleta-opcion.selected{
+  border-color: var(--taupe-grey);
+}
+
+.paleta-preview{
+  display: flex;
+  height: 28px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.paleta-preview > span{
+  flex: 1;
+}
+
+.paleta-opcion small{
+  color: var(--taupe-grey);
+  font-size: .8rem;
+  text-align: left;
+}
+
+/* fondo: imagen y color sólido */
+.personalizacion-fondo-row{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.fondo-preview{
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background-color: var(--pale-slate);
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+  border: 1px solid var(--pale-slate);
+}
+
+#inputColorFondo{
+  width: 44px;
+  height: 36px;
+  padding: 2px;
+  border: 1px solid var(--pale-slate);
+  border-radius: 8px;
+  cursor: pointer;
+  background: white;
+}
+
+#inputFondo{
+  flex: 1;
+  min-width: 140px;
+}
+
+#opacidadSlider{
+  width: 100%;
+  accent-color: var(--old-rose);
+}
+
+#opacidadValor{
+  font-size: .85rem;
+  color: var(--cool-steel);
+}
+
+.personalizacion-botones{
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.personalizacion-botones .btn-restablecer{
+  background-color: var(--cool-steel);
+  margin-right: auto;
 }
