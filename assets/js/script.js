@@ -19,13 +19,13 @@ function save() {
     actualizarProgreso();
 }
 
+
 function addTask() {
+    const input = document.getElementById("task-input");
+    const priorityInput = document.getElementById("task-priority");
 
-    const input =
-        document.getElementById("task-input");
-
-    const text =
-        input.value.trim();
+    const text = input.value.trim();
+    const priority = priorityInput.value;
 
     if (!text) return;
 
@@ -41,9 +41,11 @@ function addTask() {
     ultimoId = nuevaTarea.id;
 
     input.value = "";
+    priorityInput.value = "media";
 
     save();
 }
+
 
 function toggleDone(id) {
 
@@ -223,9 +225,11 @@ document
 // POMODORO
 // ========================================
 
-let pomodoroSegundos = 0;
-let pomodoroMinutos = 25;
-let pomodoroHoras = 0;
+// Un único contador en segundos para la fase actual (estudio o descanso).
+// Evitamos manejar horas/minutos/segundos por separado: eso era lo que
+// generaba los bugs de sincronización del cronómetro.
+let segundosRestantes = 25 * 60;
+
 let minutosEstudio = 25;
 let minutosDescanso = 5;
 
@@ -235,58 +239,114 @@ let setActual = 1;
 let esDescanso = false;
 let segundosAcumulados = 0;
 
+let intervaloPomodoro = null;
+
+// true desde que se aprieta "Iniciar" hasta que se aprieta "Reiniciar"
+let iniciado = false;
+
 const cronometro =
     document.getElementById("cronometro");
 
 const minutosActuales =
     document.getElementById("minutosActuales");
 
-let intervaloPomodoro = null;
-
 const tiempo =
     document.getElementById("tiempo");
 
+const tipoPomodoroSelect =
+    document.getElementById("tipoPomodoro");
+
+const cantidadSetsSelect =
+    document.getElementById("cantidadSets");
+
+const iniciarBtn =
+    document.getElementById("iniciar");
+
+const pausarBtn =
+    document.getElementById("pausar");
+
+const reiniciarBtn =
+    document.getElementById("reiniciar");
+
 function pintarTiempo() {
 
+    const horas =
+        Math.floor(segundosRestantes / 3600);
+
+    const minutos =
+        Math.floor((segundosRestantes % 3600) / 60);
+
+    const segundos =
+        segundosRestantes % 60;
+
     tiempo.textContent =
-        `${String(pomodoroHoras).padStart(2,"0")}:` +
-        `${String(pomodoroMinutos).padStart(2,"0")}:` +
-        `${String(pomodoroSegundos).padStart(2,"0")}`;
+        `${String(horas).padStart(2,"0")}:` +
+        `${String(minutos).padStart(2,"0")}:` +
+        `${String(segundos).padStart(2,"0")}`;
+}
+
+// Lee el modo elegido ("25-5", "50-10", "90-20") y actualiza
+// minutosEstudio / minutosDescanso.
+function leerSeleccionModo() {
+
+    const opcion =
+        tipoPomodoroSelect.value;
+
+    const partes =
+        opcion.split("-");
+
+    minutosEstudio =
+        parseInt(partes[0]);
+
+    minutosDescanso =
+        parseInt(partes[1]);
+}
+
+function mostrarBotonesEnEjecucion() {
+    iniciarBtn.style.display = "none";
+    pausarBtn.style.display = "inline-block";
+    reiniciarBtn.style.display = "inline-block";
+}
+
+function mostrarBotonInicial() {
+    iniciarBtn.style.display = "inline-block";
+    pausarBtn.style.display = "none";
+    reiniciarBtn.style.display = "none";
+}
+
+function detenerIntervalo() {
+    clearInterval(intervaloPomodoro);
+    intervaloPomodoro = null;
 }
 
 function actualizarPomodoro() {
 
-    pomodoroSegundos--;
+    segundosRestantes--;
 
-    // Tiempo acumulado de estudio
-    segundosAcumulados++;
+    // El tiempo acumulado / progreso solo cuenta minutos de estudio,
+    // no de descanso.
+    if (!esDescanso) {
 
-    let minutosAcumulados =
-        Math.floor(segundosAcumulados / 60);
+        segundosAcumulados++;
 
-    let segundosMostrar =
-        segundosAcumulados % 60;
+        const minutosAcumulados =
+            Math.floor(segundosAcumulados / 60);
 
-    cronometro.textContent =
-        String(minutosAcumulados).padStart(2, "0")
-        + ":"
-        + String(segundosMostrar).padStart(2, "0");
+        const segundosMostrar =
+            segundosAcumulados % 60;
 
-    minutosActuales.textContent =
-        minutosAcumulados;
-    actualizarProgreso();
+        cronometro.textContent =
+            String(minutosAcumulados).padStart(2, "0")
+            + ":"
+            + String(segundosMostrar).padStart(2, "0");
 
-    if (pomodoroSegundos < 0) {
+        minutosActuales.textContent =
+            minutosAcumulados;
 
-        pomodoroSegundos = 59;
-        pomodoroMinutos--;
-
+        actualizarProgreso();
     }
 
-    if (
-        pomodoroMinutos === 0 &&
-        pomodoroSegundos === 0
-    ) {
+    if (segundosRestantes <= 0) {
 
         if (!esDescanso) {
 
@@ -297,29 +357,18 @@ function actualizarPomodoro() {
             ).textContent =
                 "Descanso";
 
-            pomodoroMinutos =
-                minutosDescanso;
+            segundosRestantes =
+                minutosDescanso * 60;
 
-            pomodoroSegundos = 0;
-
-            pintarTiempo();
-            return;
-        }
-
-        else {
+        } else {
 
             setActual++;
 
-            if (
-                setActual > totalSets
-            ) {
+            if (setActual > totalSets) {
 
-                clearInterval(
-                    intervaloPomodoro
-                );
+                detenerIntervalo();
 
-                intervaloPomodoro = null;
-
+                segundosRestantes = 0;
                 pintarTiempo();
 
                 alert(
@@ -336,58 +385,39 @@ function actualizarPomodoro() {
             ).textContent =
                 "Estudio";
 
-            pomodoroMinutos =
-                minutosEstudio;
-
-            pomodoroSegundos = 0;
-
-            pintarTiempo();
-            return;
+            segundosRestantes =
+                minutosEstudio * 60;
         }
     }
 
     pintarTiempo();
 }
 
-document
-.getElementById("iniciar")
-.addEventListener("click", () => {
+iniciarBtn.addEventListener("click", () => {
 
     if (intervaloPomodoro !== null) return;
 
-    const opcion =
-        document.getElementById(
-            "tipoPomodoro"
-        ).value;
-
-    const partes =
-        opcion.split("-");
-
-    minutosEstudio =
-        parseInt(partes[0]);
-
-    minutosDescanso =
-        parseInt(partes[1]);
+    leerSeleccionModo();
 
     totalSets =
-        parseInt(
-            document.getElementById(
-                "cantidadSets"
-            ).value
-        );
+        parseInt(cantidadSetsSelect.value);
 
-    // Si todavia no arranco ninguna cuenta (esta en el tiempo "de fabrica"),
-    // usamos el tiempo de estudio elegido en el select.
-    if (
-        !esDescanso &&
-        setActual === 1 &&
-        segundosAcumulados === 0
-    ) {
+    if (!iniciado) {
 
-        pomodoroMinutos =
-            minutosEstudio;
+        // Primer inicio (o luego de un Reiniciar): arrancamos
+        // una sesión nueva desde cero.
+        esDescanso = false;
+        setActual = 1;
+        segundosAcumulados = 0;
+        segundosRestantes = minutosEstudio * 60;
 
-        pomodoroSegundos = 0;
+        document.getElementById(
+            "estadoPomodoro"
+        ).textContent =
+            "Estudio";
+
+        cronometro.textContent = "00:00";
+        minutosActuales.textContent = "0";
 
         pintarTiempo();
     }
@@ -399,6 +429,13 @@ document
         "objetivoMinutos"
     ).textContent = objetivo;
 
+    iniciado = true;
+
+    tipoPomodoroSelect.disabled = true;
+    cantidadSetsSelect.disabled = true;
+
+    mostrarBotonesEnEjecucion();
+
     intervaloPomodoro =
         setInterval(
             actualizarPomodoro,
@@ -406,62 +443,99 @@ document
         );
 });
 
-document
-.getElementById("pausar")
-.addEventListener("click", () => {
+// El botón "Pausar" funciona como pausa/reanuda: mientras el
+// cronómetro está iniciado, es el único control para eso.
+pausarBtn.addEventListener("click", () => {
 
-    clearInterval(
-        intervaloPomodoro
-    );
+    if (intervaloPomodoro !== null) {
 
-    intervaloPomodoro = null;
+        detenerIntervalo();
+        pausarBtn.textContent = "Reanudar";
 
+    } else {
+
+        intervaloPomodoro =
+            setInterval(
+                actualizarPomodoro,
+                1000
+            );
+
+        pausarBtn.textContent = "Pausar";
+    }
 });
 
-document
-.getElementById("reiniciar")
-.addEventListener("click", () => {
+reiniciarBtn.addEventListener("click", () => {
+
+    detenerIntervalo();
 
     esDescanso = false;
     setActual = 1;
     segundosAcumulados = 0;
+    iniciado = false;
 
     document.getElementById(
         "estadoPomodoro"
-        ).textContent =
+    ).textContent =
         "Estudio";
-    clearInterval(
-        intervaloPomodoro
-    );
 
-    intervaloPomodoro = null;
+    leerSeleccionModo();
 
-    // Reinicia respetando el modo elegido en el select,
-    // en vez de volver siempre a 25 min como antes.
-    const opcion =
-        document.getElementById(
-            "tipoPomodoro"
-        ).value;
+    segundosRestantes =
+        minutosEstudio * 60;
 
-    const partes =
-        opcion.split("-");
-
-    minutosEstudio =
-        parseInt(partes[0]);
-
-    minutosDescanso =
-        parseInt(partes[1]);
-
-    pomodoroSegundos = 0;
-    pomodoroMinutos = minutosEstudio;
-    pomodoroHoras = 0;
+    pintarTiempo();
 
     cronometro.textContent = "00:00";
     minutosActuales.textContent = "0";
 
-    pintarTiempo();
+    tipoPomodoroSelect.disabled = false;
+    cantidadSetsSelect.disabled = false;
 
+    pausarBtn.textContent = "Pausar";
+
+    mostrarBotonInicial();
 });
+
+// Cambiar el modo de estudio/descanso actualiza el número en
+// pantalla al instante, sin necesidad de tocar Iniciar.
+// Solo tiene efecto si el cronómetro no está corriendo.
+tipoPomodoroSelect.addEventListener("change", () => {
+
+    if (!iniciado) {
+
+        leerSeleccionModo();
+
+        segundosRestantes =
+            minutosEstudio * 60;
+
+        pintarTiempo();
+    }
+});
+
+cantidadSetsSelect.addEventListener("change", () => {
+
+    if (!iniciado) {
+
+        totalSets =
+            parseInt(cantidadSetsSelect.value);
+
+        leerSeleccionModo();
+
+        objetivo =
+            minutosEstudio * totalSets;
+
+        document.getElementById(
+            "objetivoMinutos"
+        ).textContent = objetivo;
+    }
+});
+
+// Estado visual inicial del cronómetro, acorde a la opción
+// seleccionada por defecto en el <select>.
+leerSeleccionModo();
+segundosRestantes = minutosEstudio * 60;
+pintarTiempo();
+mostrarBotonInicial();
 
 // ========================================
 // PROGRESO
@@ -604,5 +678,55 @@ document
     .classList.remove("mostrar");
 
     alert("¡Hasta la próxima! ");
+
+});
+// Si el usuario cambia de pestaña mientras el cronómetro está
+// corriendo en fase de Estudio, al volver le mostramos una imagen
+// "reto" con un botón para cerrarla y retomar el estudio.
+let seDistrajoEnEstudio = false;
+
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+        document.title = "¿Te fuiste? 👀";
+
+        if (intervaloPomodoro !== null && !esDescanso) {
+            seDistrajoEnEstudio = true;
+        }
+
+    } else {
+        document.title = "LockIn - Pomodoro y Tareas";
+
+        if (seDistrajoEnEstudio) {
+            mostrarReto();
+            seDistrajoEnEstudio = false;
+        }
+    }
+});
+
+function mostrarReto() {
+
+    const frases = [
+        "Volver a estudiar",
+        "¡Me mantendré concentrado esta vez!",
+        "¡No más distracciones!"
+
+    ];
+
+    const frase =
+        frases[Math.floor(Math.random() * frases.length)];
+
+    document.getElementById("cerrarReto").textContent = frase;
+
+    document.getElementById("mensajeVolviste").classList.add("mostrar");
+}
+
+
+document
+.getElementById("cerrarReto")
+.addEventListener("click", () => {
+
+    document
+    .getElementById("mensajeVolviste")
+    .classList.remove("mostrar");
 
 });
