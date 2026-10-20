@@ -5,23 +5,24 @@
   --cool-steel: #9DA3A4;
   --taupe-grey: #604D53;
 
-  /* Personalización: paleta de color, opacidad y modo claro/oscuro
-     se pisan en tiempo de ejecución vía JS (personalizacion.js) */
-  --accent-color: var(--old-rose);
-  --accent-dark: #720002;
-  --accent-tint: #F4D6DC;
+  /* Personalización por defecto: Monocromático neutro */
+  --accent-color: #353A3E;
+  --accent-dark: #1A1A1A;
+  --accent-dark-rgb: 26, 26, 26;
+  --accent-tint: #E0E0E0;
   --panel-opacity: 1;
+  --bg-blur: 0px;
 
   /* Modo claro (default) */
-  --bg-base: var(--pale-slate);
+  --bg-base: #C8C8C8;
   --card-bg-rgb: 255, 255, 255;
-  --text-base: var(--taupe-grey);
+  --text-base: #222526;
 
   --sidebar-width: 230px;
   --radius: 16px;
 }
 
-/* Modo oscuro: se activa poniendo data-modo="oscuro" en <html> */
+/* Modo oscuro */
 [data-modo="oscuro"]{
   --bg-base: #222526;
   --card-bg-rgb: 42, 46, 49;
@@ -33,17 +34,28 @@
 }
 
 body{
-  font-weight: 500px;
+  position: relative;
+  font-weight: 500;
   background-color: var(--bg-base);
-  background-image: none;
+  color: var(--text-base);
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Bagel Fat One', cursive;
+  transition: background-color .2s ease, color .2s ease;
+}
+
+body::before{
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--bg-color-custom, transparent);
+  background-image: var(--bg-image, none);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed;
-  color: var(--text-base);
-  margin: 0;
-  font-family: 'Bagel Fat One', cursive;
-  transition: background-color .2s ease, color .2s ease;
+  filter: blur(var(--bg-blur));
+  transform: scale(1.08);
 }
 
 .app-layout{
@@ -51,15 +63,15 @@ body{
     min-height: 100vh;
 }
 
-/* side bar */
+/* Sidebar */
 .sidebar {
     width: var(--sidebar-width);
-    background-color: var(--accent-dark);
-    color: var(--soft-blush);
+    background-color: rgba(var(--accent-dark-rgb), var(--panel-opacity));
+    color: var(--accent-tint);
     padding: 24px 16px;
     flex-shrink: 0;
+    backdrop-filter: blur(2px);
     transition: background-color .2s ease;
-    /* font-size: 500px; */
 }
 
 .sidebar-logo{
@@ -86,7 +98,7 @@ body{
     gap: 10px;
     padding: 10px 14px;
     border-radius: var(--radius);
-    color: var(--soft-blush);
+    color: var(--accent-tint);
     text-decoration: none;
     transition: background-color .2s ease;
 }
@@ -101,7 +113,7 @@ body{
     gap: 10px;
     padding: 10px 14px;
     border-radius: var(--radius);
-    color: var(--soft-blush);
+    color: var(--accent-tint);
     text-decoration: none;
     transition: background-color .2s ease;
 }
@@ -115,15 +127,14 @@ body{
     color: white;
 }
 
-/* boton hamburguesa, solo visible en mobile */
 .sidebar-toggle{
     display: none;
     position: fixed;
     top: 14px;
     left: 14px;
     z-index: 20;
-    background-color: var(--accent-dark);
-    color: var(--soft-blush);
+    background-color: rgba(var(--accent-dark-rgb), var(--panel-opacity));
+    color: var(--accent-tint);
     border: none;
     border-radius: 10px;
     width: 40px;
@@ -133,7 +144,6 @@ body{
     justify-content: center;
 }
 
-/* contenido */
 .content{
     flex: 1;
     padding: 32px;
@@ -341,7 +351,7 @@ progress{
   overflow: hidden;
 }
 progress::-webkit-progress-value {
-  background-color: var(--accent-color); /* cambiá por el color que quieras */
+  background-color: var(--accent-color);
   border-radius: 15px;
 }
 #porcentaje{
@@ -350,16 +360,12 @@ progress::-webkit-progress-value {
   margin: 4px 0 16px;
 }
 
-/* ===== Responsive ===== */
-
-/* Tablet */
 @media (max-width: 900px){
   .cards-grid{
     grid-template-columns: 1fr;
   }
 }
 
-/* Mobile: el sidebar se convierte en menu deslizable */
 @media (max-width: 768px){
   .sidebar-toggle{
     display: flex;
@@ -422,7 +428,6 @@ progress::-webkit-progress-value {
   }
 }
 
-/* Mobile chico */
 @media (max-width: 420px){
   .topbar h2{
     font-size: 1.3rem;
@@ -438,11 +443,10 @@ progress::-webkit-progress-value {
   }
 }
 
-/* ===== Modal de Felicitaciones ===== */
+/* Modal Felicitaciones */
 .modal-final{
   position: fixed;
   inset: 0;
-  /* background-color: var(--soft-blush); */
   display: none;
   justify-content: center;
   align-items: center;
@@ -473,7 +477,7 @@ progress::-webkit-progress-value {
   }
 }
 
-/* ===== REGISTRO ===== */
+/* Registro */
 #saludo-registro{
     font-size: 44px;
     color: var(--taupe-grey);
@@ -503,8 +507,7 @@ progress::-webkit-progress-value {
   flex-direction: column;
 }
 
-/* ===== MODO OSCURO: ajustes de formularios ===== */
-
+/* Modo oscuro inputs */
 [data-modo="oscuro"] input[type="text"],
 [data-modo="oscuro"] input[type="color"],
 [data-modo="oscuro"] select,
@@ -516,15 +519,14 @@ progress::-webkit-progress-value {
   border-color: #4A4E51;
 }
 
-/* ===== PERSONALIZACIÓN (paleta, modo, fondo, transparencia) ===== */
-
+/* Personalización modal */
 .nav-personalizar{
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
   border-radius: var(--radius);
-  color: var(--soft-blush);
+  color: var(--accent-tint);
   background: transparent;
   border: none;
   text-align: left;
@@ -570,7 +572,7 @@ progress::-webkit-progress-value {
 }
 
 .personalizacion-modal h3{
-  color: var(--old-rose);
+  color: var(--accent-color);
   margin-top: 0;
   padding-right: 24px;
 }
@@ -605,7 +607,6 @@ progress::-webkit-progress-value {
   margin-bottom: 10px;
 }
 
-/* modo claro / oscuro: segmented control */
 .modo-toggle{
   display: flex;
   gap: 8px;
@@ -628,12 +629,11 @@ progress::-webkit-progress-value {
 }
 
 .modo-opcion.selected{
-  border-color: var(--old-rose);
-  background-color: var(--soft-blush);
+  border-color: var(--accent-color);
+  background-color: var(--pale-slate);
   color: var(--taupe-grey);
 }
 
-/* paletas: cada opción muestra sus colores reales, no un solo circulito */
 .paletas-grid{
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -675,7 +675,6 @@ progress::-webkit-progress-value {
   text-align: left;
 }
 
-/* fondo: imagen y color sólido */
 .personalizacion-fondo-row{
   display: flex;
   align-items: center;
@@ -709,12 +708,14 @@ progress::-webkit-progress-value {
   min-width: 140px;
 }
 
-#opacidadSlider{
+#opacidadSlider,
+#desenfoqueSlider{
   width: 100%;
-  accent-color: var(--old-rose);
+  accent-color: var(--accent-color);
 }
 
-#opacidadValor{
+#opacidadValor,
+#desenfoqueValor{
   font-size: .85rem;
   color: var(--cool-steel);
 }
